@@ -87,7 +87,14 @@ class TaskEditorViewControllerTests: XCTestCase {
 //    }
     
     func testDeleteButton() {
+        let task = Task(id: "id", name: "name", description: "description", date: Date(), isCompleted: false)
+
+        sut.selectedTask = task
         sut.deleteButton.sendActions(for: .touchUpInside)
+    }
+    
+    func testDeleteActionBlock() {
+        
     }
     
 }

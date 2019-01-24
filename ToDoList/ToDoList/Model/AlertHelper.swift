@@ -11,46 +11,99 @@ import UIKit
 
 class AlertHelper {
 
-    // showAlertController with 2 actions (leftAction and rightAction) o 1 action (if rightAction is nil)
-    static func showAlertController(controller: UIViewController, title: String?, message: String?, preferredStyle: UIAlertController.Style, leftAction: UIAlertAction!, rightAction: UIAlertAction? = nil) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
-        
-        alertController.addAction(leftAction)
-        if let rightAction = rightAction {
-            alertController.addAction(rightAction)
-        }
-        
-        controller.present(alertController, animated: true, completion: nil)
+    static var alertController: UIAlertController?
+    static private let okBlock: ((UIAlertAction) -> Void) = { action -> Void in
+        AlertHelper.alertController?.dismiss(animated: true, completion: nil)
     }
     
-    
-    
-    
-    
-    
-    static func showNoTaskNameAlert(controller: UIViewController) {
-        let noTaskNameAlertController = UIAlertController(title: "Your task needs a name.", message: "", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "Ok", style: .default) { action -> Void in
-            controller.dismiss(animated: true, completion: nil)
+    // Ok alert
+    static func showOkAlert(in controller: UIViewController,
+                          title: String?,
+                          message: String?,
+                          preferredStyle: UIAlertController.Style) {
+        
+        alertController = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
+        let okAction = UIAlertAction(title: "Ok", style: .default, handler: okBlock)
+        alertController?.addAction(okAction)
+        if let alertController = alertController {
+            controller.present(alertController, animated: true, completion: nil)
         }
-        noTaskNameAlertController.addAction(okAction)
-        controller.present(noTaskNameAlertController, animated: true, completion: nil)
     }
     
-    static func showDeleteTaskAlert(controller: UIViewController, task: Task) {
-        let deleteTaskAlertController = UIAlertController(title: "Delete task", message: "Are you sure you want to delete this task? This action cannot be undone", preferredStyle: .alert)
+    // Deletion confirmation alert
+    static func showDeletionAlert(in controller: UIViewController,
+                                    title: String?,
+                                    message: String?,
+                                    preferredStyle: UIAlertController.Style,
+                                    deleteActionBlock: @escaping (()->())) {
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
-            controller.dismiss(animated: true, completion: nil)
-        }
+        alertController = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: okBlock)
         let deleteAction = UIAlertAction(title: "Ok", style: .default) { action -> Void in
-            TaskManager.shared.deleteTask(id: task.id)
-            controller.navigationController?.popToRootViewController(animated: true)
+            deleteActionBlock()
         }
         
-        deleteTaskAlertController.addAction(cancelAction)
-        deleteTaskAlertController.addAction(deleteAction)
-        controller.present(deleteTaskAlertController, animated: true, completion: nil)
+        alertController?.addAction(cancelAction)
+        alertController?.addAction(deleteAction)
+        if let alertController = alertController {
+            controller.present(alertController, animated: true, completion: nil)
+        }
     }
+    
+    // Du's Function
+//
+//    static func showAlert(in controller: UIViewController,
+//                          title: String,
+//                          message: String,
+//                          okActionCompletion: @escaping (()->())? = nil,
+//                          cancelActionCompletion: @escaping (()->())? = nil) {
+//
+//        let alertController = UIAlertController(title: title, message: , preferredStyle: .alert)
+//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+//            guard let completion = okActionCompletion else {
+//                alertController.dismiss(animatedL true, completion: nil)
+//                return
+//            }
+//            completion()
+//        }
+//        let okAction = UIAlertAction(title: "Ok", style: .default) { _ in
+//            cancelActionCompletion?()
+//        }
+//
+//        alertController.addAction(cancelAction)
+//        alertController.addAction(okAction)
+//        controller.present(alertController, animated: true, completion: nil)
+//    }
+    
+    
+    // Refactor both functions in generic ones
+    
+//    static func showNoTaskNameAlert(controller: UIViewController) {
+//        let noTaskNameAlertController = UIAlertController(title: "Your task needs a name", message: "", preferredStyle: .alert)
+//        let okAction = UIAlertAction(title: "Ok", style: .default) { action -> Void in
+//            noTaskNameAlertController.dismiss(animated: true, completion: nil)
+//        }
+//        
+//        noTaskNameAlertController.addAction(okAction)
+//        controller.present(noTaskNameAlertController, animated: true, completion: nil)
+//    }
+    
+//    static func showConfirmActionAlert(controller: UIViewController, okActionBlock: @escaping (()->())) {
+//        let deleteTaskAlertController = UIAlertController(title: "Delete task", message: "Are you sure you want to delete this task? This action cannot be undone", preferredStyle: .alert)
+//        
+//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
+//            deleteTaskAlertController.dismiss(animated: true, completion: nil)
+//        }
+//        
+//        let confirmAction = UIAlertAction(title: "Ok", style: .default) { action -> Void in
+//            okActionBlock("ANSWER")
+//            controller.navigationController?.popToRootViewController(animated: true)
+//        }
+//        
+//        deleteTaskAlertController.addAction(cancelAction)
+//        deleteTaskAlertController.addAction(confirmAction)
+//        controller.present(deleteTaskAlertController, animated: true, completion: nil)
+//    }
     
 }

@@ -174,17 +174,20 @@ class TaskListTableViewController: UITableViewController {
         let deleteAction = UITableViewRowAction(style: .normal, title: "Delete") { (rowAction, indexPath) in
             let tasks = self.setUpTasksArray(indexPath: indexPath, section: indexPath.section)
             let task = tasks[indexPath.row]
-            AlertHelper.showDeleteTaskAlert(controller: self, task: task)
+            AlertHelper.showDeletionAlert(in: self, title: "Delete task", message: "Are you sure you want to delete this task? This action cannot be undone", preferredStyle: UIAlertController.Style.alert, deleteActionBlock: {
+                TaskManager.shared.deleteTask(id: task.id)
+                self.dismiss(animated: true, completion: nil)
+            })
         }
         deleteAction.backgroundColor = .red
         return deleteAction
     }
     
     func setUpEditAction() -> UITableViewRowAction {
-        let editAction = UITableViewRowAction(style: .normal, title: "Edit") { [weak self] (rowAction, indexPath) in
-            let tasks = self?.setUpTasksArray(indexPath: indexPath, section: indexPath.section)
-            self?.selectedTask = tasks?[indexPath.row]
-            self?.performSegue(withIdentifier: "SegueEditTask", sender: self)
+        let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (rowAction, indexPath) in
+            let tasks = self.setUpTasksArray(indexPath: indexPath, section: indexPath.section)
+            self.selectedTask = tasks[indexPath.row]
+            self.performSegue(withIdentifier: "SegueEditTask", sender: self)
         }
         return editAction
     }

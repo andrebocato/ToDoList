@@ -30,9 +30,11 @@ class TaskEditorViewController: UIViewController {
     
     @IBAction func deleteButton(_ sender: Any) {
         if let selectedTask = selectedTask {
-            AlertHelper.showDeleteTaskAlert(controller: self, task: selectedTask)
+            AlertHelper.showDeletionAlert(in: self, title: "Delete task", message: "Are you sure you want to delete this task? This action cannot be undone", preferredStyle: UIAlertController.Style.alert, deleteActionBlock: {
+                TaskManager.shared.deleteTask(id: selectedTask.id)
+                self.navigationController?.popToRootViewController(animated: true)
+            })
         }
-//        AlertHelper.showAlertController(controller: self, title: "Delete task", message: "Are you sure you want to delete this task? This action cannot be undone", preferredStyle: .alert, leftAction: deleteAction, rightAction: cancelAction)
     }
 
     // MARK: - Properties
@@ -76,7 +78,8 @@ class TaskEditorViewController: UIViewController {
     
     func completeEdition() {
         if nameTextField.text == "" {
-            AlertHelper.showNoTaskNameAlert(controller: self)
+            AlertHelper.showOkAlert(in: self, title: "Your task needs a name", message: "", preferredStyle: UIAlertController.Style.alert)
+//            AlertHelper.showNoTaskNameAlert(controller: self)
         } else {
             saveTaskAfterEditing()
         }

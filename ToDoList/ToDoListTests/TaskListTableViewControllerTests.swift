@@ -64,10 +64,6 @@ class TaskListTableViewControllerTests: XCTestCase {
         sut.prepare(for: segueNewTask, sender: (Any).self)
     }
     
-//    func testSetUpTasksArray() {
-//        @TODO: execute case where indexPath.section == 1
-//    }
-    
     func testSetUpAttributedText() {
         let task = Task(id: "id", name: "task", description: "description", date: Date(), isCompleted: false)
         
@@ -113,7 +109,6 @@ class TaskListTableViewControllerTests: XCTestCase {
     }
     
     func testConfigureCell() {
-        // @TODO: execute tasks.count > 0 case
         let indexPath = IndexPath(row: 0, section: 0)
         
         XCTAssert(TaskManager.shared.tasks.count == 0)
@@ -128,6 +123,18 @@ class TaskListTableViewControllerTests: XCTestCase {
 
         cell = UITableViewCell()
         cell = sut.configureCell(cell: cell, indexPath: indexPath)
+    }
+    
+    func testSetUpDeleteAction() {
+        _ = sut.setUpDeleteAction()
+    }
+    
+    func testSetUpEditAction() {
+        _ = sut.setUpEditAction()
+    }
+    
+    func testSetUpMarkCompletionStateAction() {
+        _ = sut.setUpMarkCompletionStateAction(completionTitle: "")
     }
     
     // MARK: - Data source methods tests
